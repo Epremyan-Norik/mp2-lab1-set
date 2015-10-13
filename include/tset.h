@@ -37,7 +37,19 @@ public:
   TSet operator* (const TSet &s);  // пересечение
   TSet operator~ (void);           // дополнение
 
-  friend istream &operator>>(istream &istr, TSet &bf);
-  friend ostream &operator<<(ostream &ostr, const TSet &bf);
+  friend istream &operator>>(istream &istr, TSet &bf)
+  {
+	  int i=0;
+	  while ((i>=0)&&(i<s.MaxPower))
+	  {
+		  s.InsElem(i);
+		  is>>i;
+	  }
+	  return is;
+  };
+  friend ostream &operator<<(ostream &ostr, const TSet &bf)
+  {
+
+  };
 };
 #endif

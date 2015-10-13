@@ -9,6 +9,11 @@
 
 TSet::TSet(int mp) : BitField(-1)
 {
+	int MaxPower;
+	TBitField bf;
+	public:
+		TSet(int MP=100):bf(MP),MaxPower(MP);
+
 }
 
 // конструктор копирования
@@ -19,6 +24,8 @@ TSet::TSet(const TSet &s) : BitField(-1)
 // конструктор преобразования типа
 TSet::TSet(const TBitField &bf) : BitField(-1)
 {
+	bf=_bf;
+	MaxPower=bf.GetLength();
 }
 
 TSet::operator TBitField()
@@ -27,15 +34,18 @@ TSet::operator TBitField()
 
 int TSet::GetMaxPower(void) const // получить макс. к-во эл-тов
 {
+
 }
 
 int TSet::IsMember(const int Elem) const // элемент множества?
 {
-    return 0;
+
+    return bf.GetBit(Elem);
 }
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
+	bf.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
@@ -59,6 +69,10 @@ int TSet::operator!=(const TSet &s) const // сравнение
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
+	TBitField tmp(MaxPower);
+	tmp=bf|s.bf;
+	TSet _S(tmp);
+	return _S;
 }
 
 TSet TSet::operator+(const int Elem) // объединение с элементом

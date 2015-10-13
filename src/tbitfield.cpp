@@ -8,7 +8,12 @@
 #include "tbitfield.h"
 
 TBitField::TBitField(int len)
-{
+{ 
+	len=BitLen;
+	MemLen=(len/(sizeof(TELEM)*8+1));
+	pMem=new TELEM[MemLen];
+	for(int i=0; i<MemLen; i++)
+	pMem[i]=0;
 }
 
 TBitField::TBitField(const TBitField &bf) // конструктор копирования
@@ -19,32 +24,35 @@ TBitField::~TBitField()
 {
 }
 
-int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
-{
-}
+int TBitField::GetMemIndex(const int n)  // индекс Мем для бита n
+{return (n/sizeof(TELEM));}
 
-TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
-{
+TELEM TBitField::GetMemMask(int n)  // битовая маска для бита n
+{n=n%(sizeof(TELEM)*8);   
+		TELEM mask=1;
+		 mask<<n;
+		 return mask;
 }
 
 // доступ к битам битового поля
 
-int TBitField::GetLength(void) const // получить длину (к-во битов)
-{
-  return 0;
-}
-
 void TBitField::SetBit(const int n) // установить бит
-{
+{ 
+	int m=GetMemIndex(n); 
+	TELEM mask=GetMemMask(n);
+	pMem[m]=pMem[m]|mask;
 }
 
-void TBitField::ClrBit(const int n) // очистить бит
+
+void TBitField::ClrBit(int n) // очистить бит
 {
+
 }
 
-int TBitField::GetBit(const int n) const // получить значение бита
+int TBitField::GetBit(const int n)  // получить значение бита
 {
-  return 0;
+	int tmp=GetMemIndex(n);
+
 }
 
 // битовые операции
@@ -65,6 +73,10 @@ int TBitField::operator!=(const TBitField &bf) const // сравнение
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 {
+	TBitField tmp(BitLen);
+	for(int i=0; i<MemLen; i++)
+		tmp.pMem[i]=pMem[i]|bf.GetMemMask[i];
+	return tmp;
 }
 
 TBitField TBitField::operator&(const TBitField &bf) // операция "и"
@@ -73,6 +85,11 @@ TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 
 TBitField TBitField::operator~(void) // отрицание
 {
+	TBitField tmp(BitLen);
+	for(int i=0;i<MemLen;i++)
+		tmp.pMem[i]=~pMem[i];
+	return tmp;
+
 }
 
 // ввод/вывод
@@ -83,4 +100,10 @@ istream &operator>>(istream &istr, TBitField &bf) // ввод
 
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
+	for(int i=0;i<bf.BitLen; i++)
+	{
+		if (GetBit(i)) ostr<<1 ; 
+		else ostr<<0;
+	}
+	return ostr;
 }
